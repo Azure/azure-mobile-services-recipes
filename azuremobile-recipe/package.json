@@ -1,0 +1,26 @@
+{
+	"name":"azuremobile-recipe",
+	"version":"0.1.4",
+	"description": "Azure Mobile Services Recipe Core Module",
+	"main": "./recipeUtils.js",
+	"licenses": [ { "type": "Apache", "url": "http://www.apache.org/licenses/LICENSE-2.0" } ],
+	"dependencies": {
+	"azure-scripty":"~0.1.0",
+	"async": "~0.1.22"
+	},
+	"repository": {
+	"type": "git",
+	"url": "git://github.com/ysxu/AzureMobile-Recipe.git"
+	},
+	"homepage": "https://github.com/ysxu/AzureMobile-Recipe",
+	"keywords": [
+	"azure",
+	"mobile",
+	"recipe"
+	],
+	"author": "Mimi Xu",
+	"readmeFilename": "README.md",
+	"plugins": {
+    	"azure-cli": "./recipeInit.js"
+	}
+}
