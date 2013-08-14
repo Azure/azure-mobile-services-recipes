@@ -1,0 +1,23 @@
+{
+  "name": "azuremobile-leaderboard",
+  "version": "0.1.4",
+  "description": "Azure Mobile Services Leaderboard Recipe",
+  "main": "index.js",
+  "licenses": [ { "type": "Apache", "url": "http://www.apache.org/licenses/LICENSE-2.0" } ],
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WindowsAzure/azure-mobile-services-recipes/blob/master/azuremobile-leaderboard"
+  },
+  "homepage": "https://github.com/WindowsAzure/azure-mobile-services-recipes",
+  "keywords": [
+    "azure",
+    "mobile",
+    "leaderboard",
+    "recipe",
+    "platform: Windows Store App",
+    "project language: C#"
+  ],
+  "author": "Mimi Xu",
+  "readmeFilename": "README.md"
+}
