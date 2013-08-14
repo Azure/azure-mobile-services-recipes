@@ -10,13 +10,15 @@ All recipes listed in this repository are published at https://npmjs.org/search?
 # Getting started
 
 ## Prerequisite
-Make sure node.js is installed (install at http://nodejs.org/) as well as azure-cli. To do so, run in command line:
+Make sure node.js, npm, and azure-cli are installed.
+Install node.js along with npm at http://nodejs.org/. 
+Install azure-cli by running in command line:
 ```bash
 npm install -g azure-cli
 ```
 Note: Azure CLI needs to be installed through npm. Users with Azure CLI installed through the Windows .msi installer will need to uninstall .msi and reintall Azure CLI through npm.
 
-## Install Recipe Core Module
+## Installing Recipe Core Module
 All recipes require the recipe core module.
 ```bash
 npm install -g azuremobile-recipe
@@ -32,12 +34,12 @@ To execute an installed recipe with user account downloaded and imported and an 
 azure mobile recipe execute <servicename> <recipename>
 ```
 
-## Listing globally installed recipes on user machine:
+## Listing globally installed recipes on user machine
 ```bash
 azure mobile recipe list
 ```
 
-## Acquiring template files to get started with Azure Mobile Services recipe development:
+## Acquiring template files to get started with Azure Mobile Services recipe development
 ```bash
 azure mobile recipe create <newRecipename>
 ```
