@@ -1,20 +1,23 @@
-AzureMobile-Recipe
+Windows Azure Mobile Services Recipes
 =======================
 
-Azure Mobile Services Recipe core module
+Recipes are commonly used, vertical tasks in mobile apps presented as solutions to simplify mobile app development.
 
-The recipe core module extends Azure CLI (Command Line Interface) to enable globally installed recipe usage and provides function library to simplify recipe development. This module installation is REQUIRED before any recipe usage.
+This repository contains Mobile Services recipe core module 'azuremobile-recipe', and some common recipes developed by Mobile Services.
+
+All recipes listed in this repository are published at https://npmjs.org/search?q=azuremobile and can be installed through npm.
 
 # Getting started
 
-## Before Installation
+## Prerequisite
 Make sure node.js is installed (install at http://nodejs.org/) as well as azure-cli. To do so, run in command line:
 ```bash
 npm install -g azure-cli
 ```
 Note: Azure CLI needs to be installed through npm. Users with Azure CLI installed through the Windows .msi installer will need to uninstall .msi and reintall Azure CLI through npm.
 
-## Install it
+## Install Recipe Core Module
+All recipes require the recipe core module.
 ```bash
 npm install -g azuremobile-recipe
 ```
