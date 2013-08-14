@@ -10,9 +10,9 @@
 	},
 	"repository": {
 	"type": "git",
-	"url": "git://github.com/ysxu/AzureMobile-Recipe.git"
+	"url": "https://github.com/WindowsAzure/azure-mobile-services-recipes/blob/master/azuremobile-recipe"
 	},
-	"homepage": "https://github.com/ysxu/AzureMobile-Recipe",
+	"homepage": "https://github.com/WindowsAzure/azure-mobile-services-recipes",
 	"keywords": [
 	"azure",
 	"mobile",

@@ -7,9 +7,9 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git://github.com/ysxu/AzureMobile-Leaderboard.git"
+    "url": "https://github.com/WindowsAzure/azure-mobile-services-recipes/blob/master/azuremobile-leaderboard"
   },
-  "homepage": "https://github.com/ysxu/AzureMobile-Leaderboard",
+  "homepage": "https://github.com/WindowsAzure/azure-mobile-services-recipes",
   "keywords": [
     "azure",
     "mobile",
