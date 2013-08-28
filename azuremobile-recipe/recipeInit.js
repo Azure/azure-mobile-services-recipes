@@ -139,7 +139,7 @@ module.exports.init = function (cli) {
                         recipe.async.forEachSeries(
                             files,
                             function (file, done) {
-                                var pathName = recipe.path.join(azureRecipe, file);
+                                var pathName = recipe.path.join(process.cwd(), azureRecipe, file);
                                 recipe.makeDir(pathName, function (err) {
                                     if (err) return callback(err);
                                     done();

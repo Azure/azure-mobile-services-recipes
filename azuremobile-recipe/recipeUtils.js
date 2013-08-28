@@ -329,7 +329,7 @@ exports.copyRecipeFile = function (dir, file, newDir, newFile, original, replace
     exports.async.series([
             function (callback) {
                 // create client directory for file
-                exports.makeDir(newDir, function (err) {
+                exports.makeDir(filedir, function (err) {
                     if (err) return callback(err);
                     callback();
                 });
