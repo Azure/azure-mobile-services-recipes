@@ -87,7 +87,7 @@ module.exports.init = function (cli) {
                     function (callback) {
                         azureRecipe = 'azuremobile-' + recipename;
                         // check if recipe exists in npm directory
-                        var progress = cli.progress('Checking recipe name availability');
+                        var progress = cli.interaction.progress('Checking recipe name availability');
                         recipe.exec('npm owner ls ' + azureRecipe, function (error, stdout, stderr) {
                             if (!error) {
                                 throw new Error('Recipe name ' + azureRecipe + ' already exists in npm directory');
@@ -183,7 +183,7 @@ module.exports.init = function (cli) {
                     function (callback) {
                         // error check: service exists
                         log.info('');
-                        var progress = cli.progress('Validating mobile service: \'' + servicename + '\'');
+                        var progress = cli.interaction.progress('Validating mobile service: \'' + servicename + '\'');
                         recipe.scripty.invoke('mobile show ' + servicename, function (err, results) {
                             progress.end();
                             if (err) return callback(err);

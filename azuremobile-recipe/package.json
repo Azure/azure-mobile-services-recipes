@@ -6,7 +6,8 @@
 	"licenses": [ { "type": "Apache", "url": "http://www.apache.org/licenses/LICENSE-2.0" } ],
 	"dependencies": {
 	"azure-scripty":"~0.1.0",
-	"async": "~0.1.22"
+	"async": "~0.1.22",
+    "underscore": "1.4.x"
 	},
 	"repository": {
 	"type": "git",
