@@ -1,9 +1,12 @@
 /*
- *
  * RECIPE FUNCTION LIBRARY
  *
  *
  */
+
+var _ = require('underscore');
+var util = require('util');
+
 exports.scripty = require('azure-scripty');
 exports.async = require('async');
 exports.fs = require('fs');
@@ -22,24 +25,30 @@ exports.setCli = function (cli) {
     log = exports.cli.output;
 }
 
-// Prompt users to enter information
-// ask(string, regex, string, callback)
-// regex will be defaulted to exports.REGEXP, to allow any input, enter null for regex
-// ask(string, string, callback)
+/**
+ * Prompt users to enter information, requires input string to match a given regex
+ * @param {string} msg String to display as the prompt
+ * @param {regex} format regular expression to match input value to to (optional)
+ * @param {string} errmsg displayed when input validation failed
+ * @param {function} callback function
+ */
 exports.ask = function (msg, format, errmsg, callback) {
-    // format message to satisfy cli.prompt parameter format
-    if (msg.indexOf(': ', msg.length - ': '.length) === -1) {
-        if (msg.indexOf(':', msg.length - ':'.length) === -1)
-            msg = msg + ': ';
-        else
-            msg = msg + ' ';
+    // Format message for cli.prompt, we are forcing single entry ': '
+    var colonLocation = msg.indexOf(':', msg.length - 2); 
+    if(colonLocation === -1) {
+        msg += ': ';
+    } else if(colonLocation !== msg.length - 1) {
+        msg += ' ';
     }
 
-    if ((arguments.length === 3) && (Object.prototype.toString.call(errmsg) === "[object Function]")) {
+    // Adjust for optional format param
+    if (arguments.length === 3 && _.isFunction(errmsg)) {
         callback = errmsg;
         errmsg = format;
-        format = exports.REGEXP;
+        format = null;
     }
+
+    // Prompt for input and validate result
     exports.cli.prompt(msg, function (input) {
         if (format !== null) {
             if (format.test(input)) {
@@ -48,9 +57,9 @@ exports.ask = function (msg, format, errmsg, callback) {
                 log.warn(errmsg);
                 exports.ask(msg, format, errmsg, callback);
             }
-        }
-        else
+        } else {
             callback(input);
+        }
     });
 }
 
@@ -99,7 +108,7 @@ exports.createTable = function (myMobileservice, tablename, permission, callback
     permission = '--permissions insert=' + permission.tableInsert + ',update=' + permission.tableUpdate + ',delete=' + permission.tableDelete + ',read=' + permission.tableRead;
 
     log.info('');
-    progress = exports.cli.progress('Checking availability for table name \'' + tablename + '\'');
+    progress = exports.cli.interaction.progress('Checking availability for table name \'' + tablename + '\'');
     exports.scripty.invoke('mobile table show ' + myMobileservice + ' ' + tablename, function (err, results) {
         // table exists
         progress.end();
@@ -108,7 +117,7 @@ exports.createTable = function (myMobileservice, tablename, permission, callback
                 if (choice.toLowerCase() === 'n' || choice.toLowerCase() === 'no') {
                     exports.ask("New " + tablename + " table name: ", exports.REGEXP, "Table name format not recognized", function (name) {
                         usertablename = name;
-                        progress = exports.cli.progress('Creating new table \'' + usertablename + '\'');
+                        progress = exports.cli.interaction.progress('Creating new table \'' + usertablename + '\'');
                         // create choice table
                         exports.scripty.invoke('mobile table create ' + myMobileservice + ' ' + usertablename + ' ' + permission, function (err, results) {
                             if (err) throw err;
@@ -120,7 +129,7 @@ exports.createTable = function (myMobileservice, tablename, permission, callback
                     });
                 } else if (choice.toLowerCase() === 'y' || choice.toLowerCase() === 'yes') {
                     log.info("Existing table '" + tablename + "' will be used for this module.");
-                    progress = exports.cli.progress('Updating table permissions');
+                    progress = exports.cli.interaction.progress('Updating table permissions');
                     exports.scripty.invoke('mobile table update ' + myMobileservice + ' ' + usertablename + ' ' + permission, function (err, results) {
                         if (err) throw err;
                         progress.end();
@@ -129,7 +138,7 @@ exports.createTable = function (myMobileservice, tablename, permission, callback
                 } else throw new Error('Invalid input');
             });
         } else {
-            progress = exports.cli.progress('Creating new table \'' + usertablename + '\'');
+            progress = exports.cli.interaction.progress('Creating new table \'' + usertablename + '\'');
             exports.scripty.invoke('mobile table create ' + myMobileservice + ' ' + usertablename + ' ' + permission, function (err, results) {
                 if (err) throw err;
                 else {
@@ -171,7 +180,7 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
     var updateSetting =  createSetting + ' --status ' + setting.status;
 
     log.info('');
-    progress = exports.cli.progress('Checking availability for job name \'' + jobName + '\'');
+    progress = exports.cli.interaction.progress('Checking availability for job name \'' + jobName + '\'');
     exports.scripty.invoke('mobile job list ' + myMobileservice, function (err, results) {
         for (var i in results) {
             if (results[i].name === jobName) {
@@ -185,7 +194,7 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
                 if (choice.toLowerCase() === 'n' || choice.toLowerCase() === 'no') {
                     exports.ask("New " + jobName + " job name: ", exports.REGEXP, "Job name format not recognized", function (name) {
                         userJob = name;
-                        progress = exports.cli.progress('Creating new job \'' + userJob + '\'');
+                        progress = exports.cli.interaction.progress('Creating new job \'' + userJob + '\'');
                         // create job
                         exports.scripty.invoke('mobile job create ' + myMobileservice + ' ' + userJob + ' ' + createSetting, function (err, results) {
                             progress.end();
@@ -193,7 +202,7 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
                             else {
                                 // update status
                                 if (setting.status === 'enabled') {
-                                    progress = exports.cli.progress('Enabling job \'' + userJob + '\'');
+                                    progress = exports.cli.interaction.progress('Enabling job \'' + userJob + '\'');
                                     exports.scripty.invoke('mobile job update ' + myMobileservice + ' ' + userJob + ' --status enabled', function (err) {
                                         progress.end();
                                         if (err) throw err;
@@ -205,7 +214,7 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
                     });
                 } else if (choice.toLowerCase() === 'y' || choice.toLowerCase() === 'yes') {
                     log.info("Existing job '" + userJob + "' will be used for this module.");
-                    progress = exports.cli.progress('Updating job settings');
+                    progress = exports.cli.interaction.progress('Updating job settings');
                     exports.scripty.invoke('mobile job update ' + myMobileservice + ' ' + userJob + ' ' + updateSetting, function (err, results) {
                         if (err) throw err;
                         progress.end();
@@ -214,14 +223,14 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
                 } else throw new Error('Invalid input');
             });
         } else {
-            progress = exports.cli.progress('Creating new job \'' + userJob + '\'');
+            progress = exports.cli.interaction.progress('Creating new job \'' + userJob + '\'');
             exports.scripty.invoke('mobile job create ' + myMobileservice + ' ' + userJob + ' ' + createSetting, function (err, results) {
                 progress.end();
                 if (err) throw err;
                 else {
                     // update status
                     if (setting.status === 'enabled') {
-                        progress = exports.cli.progress('Enabling job \'' + userJob + '\'');
+                        progress = exports.cli.interaction.progress('Enabling job \'' + userJob + '\'');
                         exports.scripty.invoke('mobile job update ' + myMobileservice + ' ' + userJob + ' --status enabled', function (err) {
                             progress.end();
                             if (err) throw err;
@@ -234,10 +243,72 @@ exports.createJob = function (myMobileservice, jobName, setting, callback) {
     });
 }
 
+/**
+ * Utility to help create a custom API for a given mobile service
+ * @param {string} [myMobileservice] name of mobile service to add the api to
+ * @param {string} [apiName] Name of the API to create
+ * @param {object} [settings] Array of settings in form of { host: value }
+ * @param {function} [callback] Callback function
+ */
+exports.createCustomAPI = function (myMobileservice, apiName, settings, callback) {
+    var finalApiName = apiName,
+        progress,
+        needApiName = true;
+
+    if (arguments.length === 3 && _.isFunction(settings)) {
+        callback = settings;
+        settings = { permissions: '*=application' };
+    }
+
+    settings['permissions'] = settings['permissions'] || '*=application';
+
+    exports.async.waterfall([
+        // Determine if the API exists
+        function (callback) {
+            progress = exports.cli.interaction.progress(util.format('Checking availability for API: \'%s\'', apiName));
+            exports.scripty.invoke('mobile api list ' + myMobileservice, function (err, results) {
+                progress.end();
+                callback(err, _.some(results, function(api) { return api.name === apiName }));
+            });
+        },
+        function (renameAPI, callback) {
+            if(!renameAPI) {
+                callback(null, true);
+                return;
+            }
+
+            exports.cli.confirm(util.format('API %s already exists, do you want to overwrite it? [y/n]: ', apiName), function (decision) {
+                if(!decision) {
+                    exports.ask('Enter new API name: ', exports.REGEXP, 'Invalid API name', function (name) {
+                        finalApiName = name;
+                        callback(null, true);
+                    });
+                } else {
+                    callback(null, false);
+                }
+            });
+        },
+        // Create/update API and its permissions
+        function (newApi, callback) {
+            progress = exports.cli.interaction.progress(newApi ? 'Creating API' : 'Updating API');
+
+            var command = util.format('mobile api %s %s %s --permissions %s', 
+                            newApi ? 'create' : 'update',
+                            myMobileservice, 
+                            finalApiName, 
+                            settings.permissions);
+
+            exports.scripty.invoke(command, function (err, result) {
+                progress.end();
+                callback(err, finalApiName);
+            });
+        }
+    ], callback);
+};
+
 // copy given file from core module to user environment & customize
 // for core module usage only
 exports.copyRecipeFile = function (dir, file, newDir, newFile, original, replacement, callback) {
-
     if (original && replacement) {
         if ((original.length != replacement.length) || (!Array.isArray(original)) || (!Array.isArray(replacement))) {
             throw new Error("Customization arguments does not satisfy the requirements.");
@@ -304,7 +375,7 @@ exports.copyRecipeFile = function (dir, file, newDir, newFile, original, replace
             if (err) throw err;
             callback();
         });
-}
+};
 
 // copy given file from module to user environment & customize
 var copyFile = function (recipename, dir, file, newDir, newFile, original, replacement, callback) {
@@ -315,7 +386,7 @@ var copyFile = function (recipename, dir, file, newDir, newFile, original, repla
             if (err) callback(err);
             callback();
         });
-}
+};
 
 // copy files from a globally installed azure mobile recipe module to user current directory
 // copyFiles(string, {dir: '', file: '', newDir: '', newFile: '', original: [], replacement: []}, callback)
@@ -341,7 +412,7 @@ exports.copyFiles = function (recipename, files, callback, display) {
             }
             callback();
         });
-}
+};
 
 // recursively create directories for given path
 // makeDir(string, num, callback)
@@ -358,6 +429,9 @@ exports.makeDir = function (path, mode, callback) {
     parts = exports.path.normalize(path).split(/[\\\/]/);
     if (parts[parts.length - 1].indexOf('.') !== -1) {
         parts.pop();
+    }
+    if (parts[0].length === 0) {
+        parts.shift();
     }
 
     exports.async.forEachSeries(
@@ -386,7 +460,7 @@ exports.makeDir = function (path, mode, callback) {
             if (callback) callback();
             else return;
         });
-}
+};
 
 // extract directory and file separately
 // splitPath(string)
@@ -435,5 +509,5 @@ exports.readPath = function (path, origin, callback) {
                 if (err) callback(err);
                 callback(null, results);
             });
-    })
-}
+    });
+};
