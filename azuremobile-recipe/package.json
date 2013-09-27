@@ -5,7 +5,7 @@
 	"main": "./recipeUtils.js",
 	"licenses": [ { "type": "Apache", "url": "http://www.apache.org/licenses/LICENSE-2.0" } ],
 	"dependencies": {
-	"azure-scripty":"~0.2.0",
+	"azure-scripty":"~0.2.1",
 	"async": "~0.1.22",
     "underscore": "1.4.x"
 	},
