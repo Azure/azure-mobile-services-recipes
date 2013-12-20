@@ -98,7 +98,7 @@ module.exports.init = function (cli) {
                                         log.warn('Fail to delete npm-debug.log');
                                 });
                             }
-                            progress.end();                            
+                            progress.end();
                             callback();
                         });
                     },
