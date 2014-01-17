@@ -438,7 +438,9 @@ exports.makeDir = function (path, mode, callback) {
         parts,
         function (file, done) {
             file = parts.slice(0, parts.indexOf(file) + 1).join('/');
-
+            if (file === "")
+                file = '/';
+            
             exports.fs.stat(file, function (err, stat) {
                 if ((!err) && (stat) && (stat.isDirectory()))
                     done();
